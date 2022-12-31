@@ -1,7 +1,26 @@
-import "./App.css";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
+import NewPlace from "./places/pages/Newplace";
+import Users from "./user/pages/Users";
 
-function App() {
-  return <div className="App">메인페이지</div>;
-}
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/" exact>
+          <Users />
+        </Route>
+        <Route path="/places/new" exact>
+          <NewPlace />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
+    </Router>
+  );
+};
 
 export default App;

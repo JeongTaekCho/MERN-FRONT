@@ -16,6 +16,9 @@ ul,
 li {
   list-style: none;
 }
+a {
+  text-decoration: none;
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",

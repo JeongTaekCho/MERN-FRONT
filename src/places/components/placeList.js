@@ -1,8 +1,8 @@
 import React from "react";
 import Card from "../../shared/components/Card";
-import PlaceItem from "./placeItem";
+import PlaceItem from "./PlaceItem";
 
-import "./placeList.css";
+import "./PlaceList.css";
 
 const PlaceList = (props) => {
   if (props.items.length === 0) {

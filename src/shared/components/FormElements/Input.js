@@ -31,8 +31,6 @@ const Input = (props) => {
   const { onInput, id } = props;
   const { value, isValid } = inputState;
 
-  console.log(onInput, id, value, isValid);
-
   useEffect(() => {
     onInput(id, value, isValid);
   }, [id, onInput, value, isValid]);

@@ -9,6 +9,7 @@ import {
 } from "../../shared/util/validators";
 
 const formReducer = (state, action) => {
+  console.log(action);
   switch (action.type) {
     case "INPUT_CHANGE":
       let formIsValid = true;
@@ -56,8 +57,13 @@ const NewPlace = () => {
     });
   }, []);
 
+  const placeSubmitHandler = (event) => {
+    event.preventDefault();
+    console.log(formState.inputs);
+  };
+
   return (
-    <form className="place-form">
+    <form className="place-form" onSubmit={placeSubmitHandler}>
       <Input
         id="title"
         element="input"
@@ -73,6 +79,14 @@ const NewPlace = () => {
         label="description"
         validators={[VALIDATOR_MINLENGTH(5)]}
         errorText="내용은 최소 5자 이상 입력해주세요."
+        onInput={inputHandler}
+      />
+      <Input
+        id="address"
+        element="input"
+        label="Address"
+        validators={[VALIDATOR_REQUIRE()]}
+        errorText="유효한 주소를 입력해주세요."
         onInput={inputHandler}
       />
       <Button type="submit" disabled={!formState.isValid}>

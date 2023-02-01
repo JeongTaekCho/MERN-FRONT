@@ -8,6 +8,8 @@ import {
 } from "../../shared/util/validators";
 import "./placeForm.css";
 
+import { useForm } from "../../shared/hooks/form-hook";
+
 const DUMMY_PLACES = [
   {
     id: "p1",
@@ -42,6 +44,25 @@ const UpdatePlace = () => {
 
   const identifiedPlace = DUMMY_PLACES.find((p) => p.id === placeId);
 
+  const [formState, inputHandler] = useForm(
+    {
+      title: {
+        value: identifiedPlace.title,
+        isValid: true,
+      },
+      description: {
+        value: identifiedPlace.description,
+        isValid: true,
+      },
+    },
+    false
+  );
+
+  const placeSubmitHandler = (event) => {
+    event.preventDefault();
+    console.log(formState.inputs);
+  };
+
   if (!identifiedPlace) {
     return (
       <div className="center">
@@ -59,9 +80,9 @@ const UpdatePlace = () => {
         label="title"
         validators={[VALIDATOR_REQUIRE()]}
         errorText="유효한 장소명을 입력해 주세요."
-        onInput={() => {}}
-        value={identifiedPlace.title}
-        valid={true}
+        onInput={inputHandler}
+        initialValue={formState.inputs.title.value}
+        initialValid={formState.inputs.title.isValid}
       />
       <Input
         id="description"
@@ -69,11 +90,15 @@ const UpdatePlace = () => {
         label="description"
         validators={[VALIDATOR_MINLENGTH(5)]}
         errorText="내용을 5자이상 입력해주세요."
-        onInput={() => {}}
-        value={identifiedPlace.description}
-        valid={true}
+        onInput={inputHandler}
+        initialValue={formState.inputs.description.value}
+        initialValid={formState.inputs.description.isValid}
       />
-      <Button type="submit" disabled={true}>
+      <Button
+        type="submit"
+        onClick={placeSubmitHandler}
+        disabled={!formState.isValid}
+      >
         Update Place
       </Button>
     </form>

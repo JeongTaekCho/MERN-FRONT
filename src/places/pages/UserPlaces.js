@@ -19,7 +19,7 @@ const UserPlaces = () => {
     },
     {
       id: "p2",
-      title: "empire state building",
+      title: "Emp. state building",
       description: "세계에서 가장 유명한 고층 빌딩 중 하나",
       imageUrl:
         "https://lh5.googleusercontent.com/p/AF1QipO1LQRpgc0tNHhxmbcWWUpv88yjuTZvcwh6VjcJ=w408-h272-k-no",

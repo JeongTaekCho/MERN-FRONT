@@ -30,10 +30,27 @@ const Auth = () => {
     false
   );
 
-  const authSubmitHandler = (event) => {
+  const authSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
-    auth.login();
+    if (isLoginMode) {
+      console.log("로그인 모드");
+    } else {
+      const response = await fetch("http://localhost:5000/api/users/signup", {
+        method: "POST",
+        headers: {
+          "contents-type": "application/Json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          name: formState.inputs.name.value,
+          email: formState.inputs.email.value,
+          password: formState.inputs.password.value,
+        }),
+      });
+      const responseData = response.json();
+
+      console.log(responseData);
+    }
   };
 
   const switchModeHandler = () => {

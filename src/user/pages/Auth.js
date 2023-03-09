@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useContext } from "react";
 import { useState } from "react";
 import Button from "../../shared/components/FormElements/Button";
@@ -32,25 +33,31 @@ const Auth = () => {
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
-    if (isLoginMode) {
-      console.log("로그인 모드");
-    } else {
-      const response = await fetch("http://localhost:5000/api/users/signup", {
-        method: "POST",
-        headers: {
-          "contents-type": "application/Json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({
-          name: formState.inputs.name.value,
-          email: formState.inputs.email.value,
-          password: formState.inputs.password.value,
-        }),
-      });
-      const responseData = response.json();
 
-      console.log(responseData);
+    if (isLoginMode) {
+    } else {
+      try {
+        const response = await fetch("http://localhost:4000/api/users/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // mode: "cors",
+          },
+          body: JSON.stringify({
+            name: formState.inputs.name.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+        });
+
+        const responseData = await response.json();
+        console.log(responseData);
+      } catch (err) {
+        console.log(err);
+      }
     }
+
+    // auth.login();
   };
 
   const switchModeHandler = () => {

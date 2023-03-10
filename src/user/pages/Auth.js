@@ -4,6 +4,7 @@ import { useState } from "react";
 import Button from "../../shared/components/FormElements/Button";
 import Input from "../../shared/components/FormElements/Input";
 import Card from "../../shared/components/UIElements/Card";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hook";
 import {
@@ -17,6 +18,8 @@ import "./Auth.css";
 
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const [formState, inputHandle, setFormData] = useForm(
     {
       email: {
@@ -37,6 +40,7 @@ const Auth = () => {
     if (isLoginMode) {
     } else {
       try {
+        setIsLoading(true);
         const response = await fetch("http://localhost:4000/api/users/signup", {
           method: "POST",
           headers: {
@@ -49,15 +53,18 @@ const Auth = () => {
             password: formState.inputs.password.value,
           }),
         });
+        auth.login();
 
         const responseData = await response.json();
         console.log(responseData);
       } catch (err) {
         console.log(err);
+        setIsLoading(false);
+        setError(err.message || "오류가 발생하였습니다 다시 시도해주세요.");
       }
     }
 
-    // auth.login();
+    setIsLoading(false);
   };
 
   const switchModeHandler = () => {
@@ -88,6 +95,7 @@ const Auth = () => {
 
   return (
     <Card className="authentication">
+      {isLoading && <LoadingSpinner asOverlay />}
       <h2>{isLoginMode ? "Login Required" : "SIGN UP"}</h2>
       <hr />
       <form onSubmit={authSubmitHandler}>

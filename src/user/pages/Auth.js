@@ -4,6 +4,7 @@ import { useState } from "react";
 import Button from "../../shared/components/FormElements/Button";
 import Input from "../../shared/components/FormElements/Input";
 import Card from "../../shared/components/UIElements/Card";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hook";
@@ -53,10 +54,16 @@ const Auth = () => {
             password: formState.inputs.password.value,
           }),
         });
-        auth.login();
 
         const responseData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+
         console.log(responseData);
+
+        auth.login();
       } catch (err) {
         console.log(err);
         setIsLoading(false);
@@ -93,49 +100,56 @@ const Auth = () => {
 
   const auth = useContext(AuthContext);
 
+  const errorHandler = () => {
+    setError(null);
+  };
+
   return (
-    <Card className="authentication">
-      {isLoading && <LoadingSpinner asOverlay />}
-      <h2>{isLoginMode ? "Login Required" : "SIGN UP"}</h2>
-      <hr />
-      <form onSubmit={authSubmitHandler}>
-        {!isLoginMode && (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={errorHandler} />
+      <Card className="authentication">
+        {isLoading && <LoadingSpinner asOverlay />}
+        <h2>{isLoginMode ? "Login Required" : "SIGN UP"}</h2>
+        <hr />
+        <form onSubmit={authSubmitHandler}>
+          {!isLoginMode && (
+            <Input
+              element="input"
+              id="name"
+              label="Your Name"
+              type="text"
+              validators={[VALIDATOR_REQUIRE]}
+              errorText="이름을 입력해주세요."
+              onInput={inputHandle}
+            />
+          )}
           <Input
             element="input"
-            id="name"
-            label="Your Name"
-            type="text"
-            validators={[VALIDATOR_REQUIRE]}
-            errorText="이름을 입력해주세요."
+            id="email"
+            type="email"
+            label="E-mail"
+            validators={[VALIDATOR_EMAIL()]}
+            errorText="유효한 이메일을 입력해주세요."
             onInput={inputHandle}
           />
-        )}
-        <Input
-          element="input"
-          id="email"
-          type="email"
-          label="E-mail"
-          validators={[VALIDATOR_EMAIL()]}
-          errorText="유효한 이메일을 입력해주세요."
-          onInput={inputHandle}
-        />
-        <Input
-          element="input"
-          id="password"
-          type="password"
-          label="Password"
-          validators={[VALIDATOR_MINLENGTH(8)]}
-          errorText="비밀번호를 8자 이상 입력해주세요."
-          onInput={inputHandle}
-        />
-        <Button type="submit" disabled={!formState.isValid}>
-          {isLoginMode ? "LOGIN" : "SIGNUP"}
+          <Input
+            element="input"
+            id="password"
+            type="password"
+            label="Password"
+            validators={[VALIDATOR_MINLENGTH(8)]}
+            errorText="비밀번호를 8자 이상 입력해주세요."
+            onInput={inputHandle}
+          />
+          <Button type="submit" disabled={!formState.isValid}>
+            {isLoginMode ? "LOGIN" : "SIGNUP"}
+          </Button>
+        </form>
+        <Button inverse onClick={switchModeHandler}>
+          SWITCH TO {isLoginMode ? "LOGIN" : "SIGNUP"}
         </Button>
-      </form>
-      <Button inverse onClick={switchModeHandler}>
-        SWITCH TO {isLoginMode ? "LOGIN" : "SIGNUP"}
-      </Button>
-    </Card>
+      </Card>
+    </React.Fragment>
   );
 };
 
